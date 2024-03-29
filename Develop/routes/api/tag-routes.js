@@ -7,7 +7,12 @@ router.get('/', (req, res) => {
   // find all tags
   // be sure to include its associated Product data
   Tag.findAll({
-    include: [Product],
+    include: [
+      {
+        model: Product,
+        through: ProductTag,
+      },
+    ],
   })
     .then((tagData) => {
       res.json(tagData);
@@ -22,7 +27,12 @@ router.get('/:id', (req, res) => {
   // be sure to include its associated Product data
   Tag.findOne({
     where: { id: req.params.id },
-    include: [Product],
+    include: [
+      {
+        model: Product,
+        through: ProductTag,
+      },
+    ],
   })
     .then((tagData) => {
       if (!tagData) {
@@ -58,7 +68,7 @@ router.put('/:id', (req, res) => {
     }
   )
     .then((updatedTag) => {
-      if (!updatedTag[0] === 0) {
+      if (updatedTag[0] === 0) {
         res.status(404).json({ message: 'Tag not found' }); 
         return;
       }
